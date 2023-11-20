@@ -20,9 +20,9 @@ jobs:
       - name: Get tag
         id: tag
         run: |
-          set -euo pipefail
-          VERSION="$(cat Dockerfile | head -n 1 | cut -f2 -d ':')-$(date +%S)"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          $Header = Get-Content -Path Dockerfile -First 1
+          $Version = $Header.Split(":")[1]
+          echo "version=$Version" >> $env:GITHUB_OUTPUT
       - name: Docker Build
         run: |
           docker build -t "cmaster11/windows-signtool:${{ steps.tag.outputs.version }}" -t "cmaster11/windows-signtool:latest" .
