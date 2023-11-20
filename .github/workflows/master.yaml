@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Containers
+    runs-on: windows-2022
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get tag
+        id: tag
+        run: |
+          set -euo pipefail
+          VERSION="$(cat Dockerfile | head -n 1 | cut -f2 -d ':')-$(date +%S)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Docker Build
+        run: |
+          docker build -t "cmaster11/windows-signtool:${{ steps.tag.outputs.version }}" -t "cmaster11/windows-signtool:latest" .
+      - name: Docker Publish
+        run: |
+          docker push "cmaster11/windows-signtool:${{ steps.tag.outputs.version }}"
+          docker push "cmaster11/windows-signtool:latest"
