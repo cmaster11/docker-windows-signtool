@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/windows/servercore:10.0.20348.2227
+FROM mcr.microsoft.com/windows/servercore:10.0.20348.2340
 
 COPY install.ps1 "C:\install.ps1"
 RUN "powershell -File C:\install.ps1"
